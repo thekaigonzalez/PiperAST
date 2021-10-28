@@ -53,7 +53,7 @@ PiperObject *PiperCompile(std::string statement) {
             pobj->funcarray = last_arg(pobj->funcargs); /* Get args */
         } else {
             pobj->error = 1; /* set error to 1 */
-            pobj->val = statement; /* set the value to statement */
+            pobj->key = split(statement, ' ')[0]; /* set the value to statement */
             pobj->msg = "Unknown declaration, '" + split(statement, ' ')[0] + "'"; /* set the error message */
 
         }
