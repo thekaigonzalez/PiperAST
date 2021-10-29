@@ -16,6 +16,24 @@
 
 #define PIP_EOF std::string::npos
 
+int pip_checkeof(std::string const& c, char D) {
+    size_t F = PIP_EOF;
+    int state = 0;
+    for (int i = 0; i < c.length(); ++ i) {
+        char cr = c[i];
+
+        if (cr == D && state == 0) {
+            F = 1;
+        } else if (cr == D && state == 2) {
+            continue;
+        } else if (cr == '"' && state == 0) {
+            state = 2;
+        } else if (cr == '"' && state == 2)
+            state = 0;
+    }
+    return F;
+}
+
 typedef std::vector<std::string> PIP_ARRAY;
 
 /// Returns an Action Tree for Piper code.
@@ -36,8 +54,8 @@ PiperObject *PiperCompile(std::string statement) {
         stat_stream >> pobj->val;
 
     } else {
-        if (statement.find("(") != PIP_EOF) {
-            if (statement.find(")") == PIP_EOF) {
+        if (pip_checkeof(statement, '(') != PIP_EOF) {
+            if (pip_checkeof(statement, ')') == PIP_EOF) {
                 pobj->error = 1; /* is an error */
                 pobj->endofstatement = true; /* EOF, not supposed to be, but EOF. */
                 pobj->isfunc = false; /* no longer a function, instead error */
